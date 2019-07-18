@@ -116,6 +116,28 @@ def updataStatus(theRole):
     if theRole[role[7]] > 0:
         theRole[role[8]] -= 1
 
+#捡装备
+def diaoLuoZhuangBei(theHero,theMoster):
+    if not roll(theMoster["diaoLuoLv"]):
+        return
+    print(f"{theMoster[role[0]]}掉落了装备{theMoster['diaoLuo']}!")
+    if len(theHero["zhuangBei"]) > 0:
+        print("你当前装备了", end="")
+        for tmp in theHero["zhuangBei"]:
+            print(tmp[0],end=",")
+        print("!")
+    else:
+        print("你当前没有装备！")
+    input1 = int(input("是否拾取装备？（0.是，1.否）"))
+    if input1 == 0:
+        theHero["zhuangBei"].append(theMoster['diaoLuo'])
+
+#涨经验
+def zhangJinYan(theRole):
+    theRole["exp"] += 5;
+    if theRole["exp"] == theRole[role[11]]*5+5:
+        levelUp()
+
 #战斗结束
 def battleEnd(theRole):
     winner = theRole[0] if theRole[1] == 0 else theRole[1]
@@ -158,7 +180,7 @@ def huoQiuShu(attacker, Attackee):
     print(f"{attacker[role[0]]}对{Attackee[role[0]]}使用了火球术！", end = "")
     reduceBlood(Attackee,hurtVal)
     if roll(70):
-        setState(theRole=Attackee, state=2, stateName="燃烧", hurtVal=5, hold=3)
+        setState(theRole=Attackee, state=2, stateName="燃烧", val=5, hold=3)
         print(f"{attacker[role[0]]}释放的火球术点燃了{Attackee[role[0]]}！持续{Attackee[role[3]][2]}回合！")
     skillCooling(attacker, "火球术")
     pass
@@ -176,13 +198,34 @@ def yinBi(attacker, Attackee):
     pass
 #攻击函数
 def gongJi(attacker, Attackee):
-    hurtVal = attacker[role[2]]
+    hurtVal = getAtk(attacker)
     print(f"{attacker[role[0]]}攻击了{Attackee[role[0]]}！",end = "")
     if roll(attacker[role[9]]):
         hurtVal *= 2
         print(f"{attacker[role[0]]}打出了暴击!效果拔群！",end = "")
     reduceBlood(Attackee, hurtVal)
     pass
+
+#升级函数
+def levelUp():
+    hero[role[11]] +=1
+    hero["exp"] = 0
+    print(f"{hero[role[0]]}升级了！攻击+2！闪避+1！当前等级：{hero[role[11]]}！")
+
+#获取角色的攻击力
+def getAtk(theRole):
+    re = theRole[role[2]]
+    for i in theRole["zhuangBei"]:
+        re += i[1]
+    re += 2*theRole[role[11]]
+    return re
+
+def getAvoidance(theRole):
+    re = theRole[role[10]]
+    for i in theRole["zhuangBei"]:
+        re += i[2]
+    re += 2 * theRole[role[11]]
+    return re
 
 #基础角色数据结构：
 # 0.name       名字
@@ -203,9 +246,11 @@ def gongJi(attacker, Attackee):
 # 8.funact     行动函数
 # 9.crit       暴击率
 #10.avoidance  闪避率
-role = ("name", "hp", "atk", "state", "skill1", "skill2", "sk1st", "sk2st", "funact", "crit", "abnormalState", "avoidance")
+#11.level      等级          每升一级，攻击力增加2，闪避增加1，满级为10级，满级后即通关
+#12.exp        经验          人物经验，仅对英雄有效升级经验公式：当前等级*5+5，每杀死一只怪物增加5经验
+role = ("name", "hp", "atk", "state", "skill1", "skill2", "sk1st", "sk2st", "funact", "crit",  "avoidance", "level")
 
-hero = {role[0]:"无名氏", role[3]:[0, "", 0, "", 0, 0, "", 0], role[8]:heroAction, role[6]:0, role[7]:0}
+hero = {role[0]:"无名氏", role[3]:[0, "", 0, "", 0, 0, "", 0], role[8]:heroAction, role[6]:0, role[7]:0, "zhuangBei":[], role[11]:0, "exp":0}
 
 occupations = [{"occ":"战士", "atk":8, role[1]:200, "skill1":"冲锋", "skill2":"爆发", "crit":30, role[10]:10},
                {"occ":"法师", "atk":5, role[1]:100, "skill1":"火球术", "skill2":"冰封术", "crit":15, role[10]:20},
@@ -213,10 +258,13 @@ occupations = [{"occ":"战士", "atk":8, role[1]:200, "skill1":"冲锋", "skill2
 
 skills = {"冲锋":chongFeng, "爆发":baoFa, "火球术":huoQiuShu, "冰封术":bingFengShu, "背刺":beiCi, "隐蔽":yinBi, "攻击":gongJi}
 
+weapons = [("皮卡耗子之脚",10,-3),("蒜头王八之头",5,15)]
+
 coolingTime = {"冲锋":2, "爆发":5, "火球术":5, "冰封术":3, "背刺":3, "隐蔽":3, "攻击":0}
 
-monsters = [{role[0]:"皮卡耗子", role[1]:100, role[2]:8, role[3]:[0, "", 0, "", 0, 0, "", 0], role[4]:"攻击", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:15, role[10]:10},
-            {role[0]:"蒜头王八", role[1]:200, role[2]:3, role[3]:[0, "", 0, "", 0, 0, "", 0], role[4]:"隐蔽", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:10, role[10]:8}]
+monsters = [{role[0]:"皮卡耗子", role[1]:100, role[2]:8, role[3]:[0, "", 0, "", 0, 0, "", 0], role[4]:"攻击", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:15, role[10]:10,"diaoLuo":weapons[0], "diaoLuoLv":50, "zhuangBei":[], role[11]:0},
+            {role[0]:"蒜头王八", role[1]:200, role[2]:3, role[3]:[0, "", 0, "", 0, 0, "", 0], role[4]:"隐蔽", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:10, role[10]:8, "diaoLuo":weapons[0], "diaoLuoLv":50, "zhuangBei":[], role[11]:0}]
+
 
 # 选择职业
 # 设置姓名
@@ -241,9 +289,6 @@ testPrint(hero)
 hero[role[0]] = input("请决定您的英雄名：")
 testPrint(hero)
 
-print("您的英雄信息如下：")
-print(f"名字：{hero[role[0]]}\t职业：{hero['occ']}\t生命值：{hero[role[1]]}\t攻击力：%03d\t技能：{hero[role[4]]}"%hero[role[2]])
-
 #战斗流程：
 #   回合开始
 #       检查行动方状态，调用对应函数
@@ -252,6 +297,10 @@ print(f"名字：{hero[role[0]]}\t职业：{hero['occ']}\t生命值：{hero[role
 #   回合结束
 #       显示双方状态，修改状态
 while True:
+    print("您的英雄信息如下：")
+    print(
+        f"名字：{hero[role[0]]}\t职业：{hero['occ']}\t生命值：{hero[role[1]]}\t攻击力：%03d\t技能：{hero[role[4]]}\t等级：{hero[role[11]]}\t经验：{hero['exp']}/%d" %(
+        hero[role[2]],hero[role[11]]*5+5))
     theMoster = monsters[random.randint(0,len(monsters)-1)]
     actors = [hero.copy(), theMoster.copy()]
     testPrint(actors[0])
@@ -262,4 +311,6 @@ while True:
         roundEnd(actors)
     if battleEnd(actors)[role[0]] != hero[role[0]]:
         break
-
+    zhangJinYan(hero)
+    diaoLuoZhuangBei(hero,theMoster)
+    input("输入回车继续！")
