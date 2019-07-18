@@ -54,16 +54,28 @@ def check(theActor):
     return re
     pass
 
+#检查角色状态
+def checkState(theActor):
+    state = theActor[role[3]]
+    re = True
+    if state[0] > 0:
+        re = False
+        print(f"{theActor[role[0]]}处于{state[1]}（{state[0]}回合）状态，无法行动！")
+    if state[2] > 0:
+        print(f"{theActor[role[0]]}受到{state[4]}点{state[3]}（{state[2]}回合）伤害！")
+    return re
+    pass
+
 #回合开始函数
 def roundStart(theActor):
     tmp = dict(list(theActor)[0])
-    if tmp[role[3]] == 0:
-        heIn = 0 if hero == tmp else 1
-        print(f"{theActor[heIn][role[0]]}\t\t\t\t\t\t{theActor[1-heIn][role[0]]}")
-        print(f"{theActor[heIn][role[1]]}---------VS---------{theActor[1-heIn][role[1]]}")
+    heIn = 0 if hero[role[0]] == tmp[role[0]] else 1
+    print(f"{theActor[heIn][role[0]]}\t\t\t\t\t\t{theActor[1-heIn][role[0]]}")
+    print(f"{theActor[heIn][role[1]]}---------VS---------{theActor[1-heIn][role[1]]}")
+    if checkState(tmp):
         tmp[role[8]](theActor)
 
-#回合开始函数
+#回合结束函数
 def roundEnd(theActor):
     updataStatus(theActor[0])
     # updataStatus(theActor[1])
@@ -71,8 +83,10 @@ def roundEnd(theActor):
 
 #更新角色状态
 def updataStatus(theRole):
-    if theRole[role[3]] > 0:
-        theRole[role[3]] -= 1
+    if theRole[role[3]][0] > 0:
+        theRole[role[3]][0] -= 1
+    if theRole[role[3]][2] > 0:
+        theRole[role[3]][2] -= 1
     if theRole[role[6]] > 0:
         theRole[role[6]] -= 1
     if theRole[role[7]] > 0:
@@ -91,22 +105,35 @@ def skillCooling(theRole,skillName):
     else :
         theRole[role[7]] = coolingTime[skillName]
 
+#设置人物状态
+def setState(theRole, state, stateName, hold, hurtVal = 0):
+    theRole[role[3]][state] = hold
+    theRole[role[3]][state+1] = stateName
+    if state == 2:
+        theRole[role[3]][state+2] = hurtVal
+
 #冲锋函数
 def chongFeng(attacker, Attackee):
     hurtVal = attacker[role[2]]+10
     reduceBlood(Attackee, hurtVal)
     print(f"{attacker[role[0]]}对{Attackee[role[0]]}使用了冲锋！对{Attackee[role[0]]}造成了{hurtVal}点伤害！")
-    if roll(30):
-        Attackee[role[3]] = 1
-        print(f"{attacker[role[0]]}释放的冲锋击倒了{Attackee[role[0]]}！持续一回合！")
+    if roll(100):
+        setState(Attackee, 0, "倒地", 1)
+        print(f"{attacker[role[0]]}释放的冲锋击倒了{Attackee[role[0]]}！持续{Attackee[role[3]][0]}回合！")
     skillCooling(attacker,"冲锋")
     pass
-
 #爆发函数
 def baoFa(attacker, Attackee):
     pass
 #火球术函数
 def huoQiuShu(attacker, Attackee):
+    hurtVal = 15
+    reduceBlood(Attackee, hurtVal)
+    print(f"{attacker[role[0]]}对{Attackee[role[0]]}使用了火球术！对{Attackee[role[0]]}造成了{hurtVal}点伤害！")
+    if roll(70):
+        setState(theRole=Attackee, state=2, stateName="燃烧", hurtVal=5, hold=3)
+        print(f"{attacker[role[0]]}释放的火球术点燃了{Attackee[role[0]]}！持续{Attackee[role[3]][2]}回合！")
+    skillCooling(attacker, "火球术")
     pass
 #冰封术函数
 def bingFengShu(attacker, Attackee):
@@ -119,7 +146,7 @@ def yinBi(attacker, Attackee):
     pass
 #攻击函数
 def gongJi(attacker, Attackee):
-    hurtVal = attacker[role[2]] + 10
+    hurtVal = attacker[role[2]]
     print(f"{attacker[role[0]]}攻击了{Attackee[role[0]]}！",end = "")
     if roll(attacker[role[9]]):
         hurtVal *= 2
@@ -132,26 +159,30 @@ def gongJi(attacker, Attackee):
 #0.name       名字
 #1.hp         生命值
 #2.atk        攻击力
-#3.state      当前状态      当前状态：值为非负数，0表示可以行动,非零数表示无法行动，数字表示还有几回合可以行动
+#3.state      当前状态      当前状态：值为列表，[0]为行动状态，0表示可以行动,数字表示还有几回合可以行动
+#                                           [1]为行动状态名称，只有在[0]不为0时有效
+#                                           [2]为扣血状态，0表示无状态，非0表示状态还有几回合消失
+#                                           [3]为扣血状态名称，只有在[2]不为0时有效
+#                                           [4]为扣血血量，只有在[2]不为0时有效
 #4.skill1     技能1
 #5.skill2     技能2
 #6.sk1st      技能1状态
 #7.sk2st      技能2状态     技能状态：值为非负数，0表示可以释放, 非零数为当前回合该技能的冷却时间
 #8.funact     行动函数
 #9.crit       暴击率
-role = ("name", "hp", "atk", "state", "skill1", "skill2", "sk1st", "sk2st", "funact", "crit")
+role = ("name", "hp", "atk", "state", "skill1", "skill2", "sk1st", "sk2st", "funact", "crit", "abnormalState")
 
-hero = {role[0]:"无名氏", role[3]:0, role[8]:heroAction, role[6]:0, role[7]:0}
+hero = {role[0]:"无名氏", role[3]:[0, "", 0, "", 0], role[8]:heroAction, role[6]:0, role[7]:0,}
 
-occupations = [{"occ":"战士", "atk":8, "hp":200, "skill1":"冲锋", "skill2":"爆发", "crit":10},
-               {"occ":"法师", "atk":3, "hp":100, "skill1":"火球术", "skill2":"冰封术", "crit":8},
+occupations = [{"occ":"战士", "atk":8, "hp":200, "skill1":"冲锋", "skill2":"爆发", "crit":30},
+               {"occ":"法师", "atk":5, "hp":100, "skill1":"火球术", "skill2":"冰封术", "crit":15},
                {"occ":"盗贼", "atk":13, "hp":80,  "skill1":"连刺", "skill2":"隐蔽", "crit":20}]
 
 skills = {"冲锋":chongFeng, "爆发":baoFa, "火球术":huoQiuShu, "冰封术":bingFengShu, "连刺":LianCi, "隐蔽":yinBi, "攻击":gongJi}
 
-coolingTime = {"冲锋":2, "爆发":5, "火球术":1, "冰封术":3, "连刺":3, "隐蔽":2, "攻击":0}
+coolingTime = {"冲锋":2, "爆发":5, "火球术":5, "冰封术":3, "连刺":3, "隐蔽":2, "攻击":0}
 
-monsters = [{role[0]:"皮卡耗子", role[1]:200, role[2]:3, role[3]:0, role[4]:"攻击", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:15}]
+monsters = [{role[0]:"皮卡耗子", role[1]:200, role[2]:3, role[3]:[0, "", 0, "", 0], role[4]:"攻击", role[5]:"攻击", role[6]:0, role[7]:0, role[8]:monsterAction, role[9]:15}]
 
 # 选择职业
 # 设置姓名
@@ -164,9 +195,13 @@ for i in range(len(occupations)):
     print(f"hp：%03d"%occupations[i][role[1]],  end = "\t")
     print(f"攻击力：%03d"%occupations[i][role[2]], end="\t\t")
     print(f"技能：{occupations[i][role[4]]}",  end="\n")
-if int(input("请选择职业(输入序号)：")) != 0:
-    print("抱歉，当前只能够选择战士")
-hero.update(occupations[0])
+while True:
+    input2 = int(input("请选择职业(输入序号)："))
+    if input2 == 2:
+        print("抱歉，当前无法选择盗贼！")
+        continue
+    break
+hero.update(occupations[input2])
 testPrint(hero)
 hero["name"] = input("请决定您的英雄名：")
 testPrint(hero)
@@ -185,7 +220,7 @@ theMoster = monsters[random.randint(0,len(monsters)-1)]
 actors = [hero.copy(), theMoster.copy()]
 testPrint(actors[0])
 testPrint(actors[1])
-print(f"你遭遇到了{actors[1]['name']}，开始战斗！")
+print(f"你遭遇到了{actors[1][role[0]]}，开始战斗！")
 while not check(actors):
     roundStart(actors)
     roundEnd(actors)
