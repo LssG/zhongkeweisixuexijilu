@@ -162,7 +162,6 @@ def setState(theRole, state, stateName, hold, val = 0):
 #冲锋函数
 def chongFeng(attacker, Attackee):
     hurtVal = attacker[role[2]]+10
-    reduceBlood(Attackee, hurtVal)
     print(f"{attacker[role[0]]}对{Attackee[role[0]]}使用了冲锋！", end = "")
     reduceBlood(Attackee,hurtVal)
     if roll(30):
