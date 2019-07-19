@@ -45,7 +45,6 @@ headStr = ["ti", "ar", "al", "by"]
 re = {}
 
 l1 = str.split("\n")
-l2 = []
 # print(l1)
 for i in range(len(headStr)):
     l1[i] = l1[i].split("]")

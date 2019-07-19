@@ -153,3 +153,10 @@ arr = [1,2,3,4,56]
 for i in arr:
     i = 2
 print(arr)
+
+string = "0123456789"
+print(string.rfind("23", 0, 4))
+
+string = "开始附带将发挥空间这拉斯"
+print(max(string))
+print(min(string))
