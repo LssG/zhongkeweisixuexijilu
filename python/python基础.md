@@ -281,3 +281,19 @@ istitle()
 
 ### 字符串替换
 replace(old,new[,max])
+
+join(sql)
+
+使用映射表进行转换
+> 流程：
+
+```
+str = "afasdgadgad"
+trans = str.maketrans("a","|")
+str2 = str.translate(trans)
+```
+> 注意：maketrans方法的两个参数的长度必须相等
+
+删除空格
+> 左侧：lstrip()  
+> 右侧：rstrip()
