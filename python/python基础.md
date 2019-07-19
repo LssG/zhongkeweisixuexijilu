@@ -287,7 +287,7 @@ def a():
 #### 数字相关识别
 isalnum()
 > 如果字符串至少有一个字符并且所有字符都是字母或数字则返回 True,否则返回 False  
-> 若包含特殊字符，返回False
+> 若包含特殊字符，返回False  
 > 中文不算特殊字符
 
 isnumeric()
@@ -313,19 +313,21 @@ swapcase()
 > 该函数不会修改原字符串  
 
 islower()
->如果字符串中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是小写，则返回 True，否则返回 False
+>如果字符串中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是小写，则返回 True，否则返回 False  
 
 isupper()
->如果字符串中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是大写，则返回 True，否则返回 False
+>如果字符串中包含至少一个区分大小写的字符，并且所有这些(区分大小写的)字符都是大写，则返回 True，否则返回 False  
 
 istitle()
 >如果字符串是标题化的(见 title())则返回 True，否则返回 False  
 首字母是不是大写 并且不能有驼峰类型单词出现
 
-### 字符串替换
+#### 字符串替换
 replace(old,new[,max])
+> 将字符串中的old子字符串全部替换为new字符串，可以通过传入max参数来指定最大的替换次数
 
 join(sql)
+> 
 
 使用映射表进行转换
 > 流程：
@@ -336,7 +338,50 @@ trans = str.maketrans("a","|")
 str2 = str.translate(trans)
 ```
 > 注意：maketrans方法的两个参数的长度必须相等
+> 该方式是按单个字符进行替换的，不是将参数作为整体进行查找的
 
 删除空格
 > 左侧：lstrip()  
 > 右侧：rstrip()
+
+#### 识别相关
+isspace()
+> 如果字符串中只包含空白，则返回 True，否则返回 False.
+> 也可以包含制表符（\t，也就是Tab键）和换行符（\n,也就是回车）
+
+isalpha()
+> 如果字符串至少有一个字符并且所有字符都是字母则返回 True, 否则返回 False  
+> 全是中文也返回True
+
+#### 查找相关
+find(str,beg = 0, end = len(string))  
+rfind(str,beg = 0, end = len(string))
+> 返回在字符串中查找到的第一个与str匹配的子字符串的首位字符的下标  
+> 若没有找到匹配项，返回-1 
+> find是从左到右进行查找，rfind是从右向左查找  
+> 可以通过设置beg和end设置查找的区间，该区间包括beg，不包括end，两个函数都一样
+
+index(str, beg=0, end=len(string))  
+rindex(str, beg=0, end=len(string))
+> 正常返回与find和rfind相同 
+> 若没有找到匹配项，则会抛出异常  
+> 参数情况与find和rfind相同
+
+count(str, beg= 0,end=len(string)) 
+> 返回 str 在 string 里面出现的次数  
+> 如果 beg 或者 end 指定则返回指定范围内 str 出现的次数  
+> 参数情况与find和rfind相同
+
+starswith(substr, beg=0,end=len(string))  
+> 检查字符串是否是以指定子字符串 substr 开头，是则返回 True，否则返回 False  
+> 如果beg 和 end 指定值，则在指定范围内检查。
+
+endswith(substr, beg=0,end=len(string))
+> 检查字符串是否以 substr 结束  
+> 如果beg 或者 end 指定则检查指定的范围内是否以 substr 结束，如果是，返回 True,否则返回 False.
+
+max()  
+min()
+> 返回字符串 str 中最大/小的字母。  
+> 也可以是中文  
+> 实质是返回Unicode编码值最大/小的字符
