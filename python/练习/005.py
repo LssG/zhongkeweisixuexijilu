@@ -1,3 +1,5 @@
+import re
+
 def str2Dict(string):
     string = string.replace('{', "")
     string = string.replace('}', "")
@@ -54,3 +56,21 @@ str = '{"service_conversation":"update_time","name":"xiaoming"}'
 print(type(str2Dict(str)))
 print(str)
 
+
+trans = str.maketrans("a","|")
+print(str.translate(trans))
+
+str = "    \t   \n   \t"
+print(str.isspace())
+
+str = "发货款的福建卡"
+print(str.isalpha())
+
+str = "jkhasiyujljkdfkljfklsdaYguZcvnaiuvuiyaw"
+print(str.find("as"))
+print(str.rfind("as"))
+
+print(max(str.swapcase()))
+
+def ti2(str):
+    return str.replace("枪","*").replace("毒","%")
