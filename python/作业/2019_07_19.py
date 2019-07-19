@@ -37,10 +37,27 @@ str = """[ti:知足]
 [04:03.79]知足的快乐叫我忍受心痛
 [04:16.64]~~End~~"""
 
-str = str.replace("[",' ')
-str = str.replace("]",' ')
+str = str.replace("[",'')
+# str = str.replace("]",' ')
+
+headStr = ["ti", "ar", "al", "by"]
+
+re = {}
 
 l1 = str.split("\n")
-print(l1)
-for i in range(len(l1)):
-    pass
+l2 = []
+# print(l1)
+for i in range(len(headStr)):
+    l1[i] = l1[i].split("]")
+    for j in headStr:
+        # print(f"\t{tmpCou}\t{j}\t{k}")
+        # print (j)
+        if l1[i][0].startswith(j):
+            re[j] = l1[i][0].split(":")[1]
+
+# print(len(re))
+l1[0:len(re)] = []
+# print(l1)
+for i in l1:
+    re[i.split("]")[0]] = i.split("]")[1]
+print(re)
