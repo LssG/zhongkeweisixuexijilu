@@ -38,12 +38,11 @@ def iteration(game, theRole, mode = True):
 guiZe = makeRole(guiZe)
 # print (guiZe)
 
-# 0代表死，1代表活
-zhuangTai = "01"
 gameP = []
 size = int(input("size:"))
 role = int(input("role:"))
-# size = 31
+times = int(input("times:"))
+# size = 111
 # role = 0
 role = makeRole(role)
 # print (role)
@@ -53,15 +52,15 @@ gameP[size//2] = 1
 # print(gameP)
 # printGame(gameP)
 # i = 210
-# for i in range(256):
-gamePlane = gameP.copy()
-print("--------------------------------------------------")
-# role = makeRole(i)
-print(f"role:{i}:{role}")
-printGame(gamePlane)
-for j in range(100):
-    gamePlane = iteration(gamePlane, role)
-    printGame(gamePlane,end="\n")
-    # print (zhuanShuZi(gamePlane))
+for i in range(1):
+    gamePlane = gameP.copy()
+    print("--------------------------------------------------")
+    # role = makeRole(i)
+    print(f"role:{i},{role}")
+    printGame(gamePlane)
+    for j in range(times):
+        gamePlane = iteration(gamePlane, role)
+        printGame(gamePlane,end="\n")
+        # print (zhuanShuZi(gamePlane))
 
 
