@@ -1,5 +1,7 @@
 guiZe = 22
 
+file = open("lifeGame.json")
+
 def makeRole(x):
     re = []
     for i in range(8):
