@@ -252,7 +252,185 @@ sc=pyplot.scatter(x, y,s=30,marker="o",c=y) pyplot.colorbar(sc)
 > pyplot.bar(date,a,color="m",edgecolor="b",label="xx") pyplot.legend(loc='upper left')
 > ```
 
+直方图 hist()
+> 由一系列高度不等的纵向条纹或线段表示数据分布的情况。   
+> 一般用横轴表示数据范围，纵轴表示分布情况。  
+> 特点:绘制连续性的数据,展示一组或者多组数据的分布状况(统计)  
+> 参数  
+> > x : 这个参数是指定每个bin(箱子)分布的数据,对应x轴  
+> > bins : 这个参数指定bin(箱子)的个数,也就是总共有几条条状图  
+> > color : 这个指定条状图的颜色  
+> > edgecolor: 直方图边框颜色  
+> > alpha: 透明度  
+> > histtype: 直方图类型，‘bar’, ‘barstacked’, ‘step’, ‘stepfilled’  
+> 
+> 示例  
+> ```
+> pyplot.hist(a,bins=len(a),histtype="barstacked",edgecolor="m") pyplot.show()
+> ```
+
+饼图 pie()
+> 参数  
+> > x：为一个存放各部分占比的向量  
+> > explode：list, 每一部分离开中心点的距离 ,元素数目与x相同且一一对应  
+> > labels：list, 设置各类的标签，元素一一对应  
+> > colors：list, 设置为各部分染色列表，元素一一对应  
+> > startangle：起始绘制角度,默认图是从x轴正方向逆时针画起,如设定=90则从y轴正方向画起  
+> > shadow：显示阴影，默认为False，即不显示阴影  
+> > labeldistance：labels标签位置，相对于半径的比例，默认值为1.1, 如<1则绘制在饼图内侧  
+> > radius：控制饼图半径，默认值为1  
+> > autopct : None,字符串，函数,百分比标签，可选,pct其实就是percent的缩写  
+> 
+> 示例  
+> ```
+> labels=["Python","Java","C","JavaScript"]  
+> sizes=[40,20,10,30]  
+> colors='yellowgreen','gold','lightskyblue','lightcoral'  
+> explode=[0.1,0,0,0]  
+> pyplot.pie(sizes,explode=explode,labels=labels,colors=colors,autopct='%.1f%%',shadow=True,startangle=50,
+>           labeldistance=1.1,radius=0.7) 
+> pyplot.show()
+> ```
+
 ## Numpy
 最基础的数据分析库
+###介绍
+用于处理数值类型的数据  
+NumPy(Numerical Python) 是 Python 语言的一个扩展程序库，支持大量的维度数组与矩阵运算，此外也针对数组运算提供大量的数学函数库  
+一个在Python中做科学计算的基础库，重在数值计算，也是大部分PYTHON科学计算库的基础库，多用于在大型、多维数组上执行数值运算  
+NumPy 是一个运行速度非常快的数学库，主要用于数组计算  
+一个强大的N维数组对象 ndarray  
+广播功能函数  
+整合 C/C++/Fortran 代码的工具  
+线性代数、傅里叶变换、随机数生成等功能  
+NumPy 通常与 SciPy（Scientific Python）和 Matplotlib（绘图库）一起使用  
+### 使用
+#### 数组
+数组的创建  
+> 创建数组的方式  
+> ```
+> arr1 = numpy.array([1,2,3,5,7,8,10])
+> arr2 = numpy.array(range(0,20,3))  
+> ```
+
+> 查看数据类型
+> > 数组.dtype  
+
+> 创建指定类型的数组  
+> ```
+> arr3 = numpy.array([0,1,1,0],dtype=bool)  
+> arr4 = numpy.array([0.55,1.9,1,0],dtype=float)  
+> ```
+
+> 查看数组类名
+> > type()  
+> 
+> 创建全零数组
+> > zeros（行，列的元组，类型）
+> > ```
+> > arr = np.zeros((3, 3),"int")
+> > ```
+> 
+> 创建全1数组
+> > ones(行列元组，类型)  
+> > ```
+> > arr = np.ones((4,5),"float")
+> > ```
+> 
+> 随机生成数组
+> > 随机生成零一下小数的多维数组
+> > ```
+> > arr = np.random.rand(3,5)
+> > ```
+> > 让每一次随机的数组相同seed（类似编号）
+> > ```
+> > np.random.seed(1) 
+> > arr = np.random.rand(3,5) 
+> > print(arr) 
+> > np.random.seed(1) 
+> > arr = np.random.rand(3,5) 
+> > print(arr)
+> > ```
+> > 随机整数np.random.randint(范围,size=(行,列))
+> > ```
+> > arr = np.random.randint(10,size=(3,5))
+> > ``` 
+
+
+数组的属性
+> dtype 数组类型  
+> size 数组的长度，即数组中的元素个数  
+> shape 数组的形状  
+> > 查看shape  
+> > ```
+> > arr4.shape
+> > ```
+> > 修改reshape(行，列)返回新的数组，修改前后的数组元素个数要一致  
+> > 转为一维数组  
+> > ```
+> > arr5.flatten()
+> > ```
+> 
+> itemsize 每个元素占用的字节数  
+> ```
+> arr = np.array([[3, 6, 8], [4, 9, 7], [5, 9, 4]],dtype="int32") 
+> print(arr.dtype) 
+> print(arr.itemsize) #=>4
+> ```
+> ndim数组的维数  
+> nbytes数组中所有数组占用的字节数 实际数组所占空间会稍大一些  
+
+切片与索引
+> 即访问数组的方式  
+> 字段访问  
+> 基本切片  
+> > 获取某个范围 从第几个元素到第几个 ```arr[2:7]```  
+> > 获取某个范围 每隔几个选一个 ```arr2 = arr[2:7:2]```  
+> 
+> 行列
+> > 获取所有行的哪一列 ndarray[:,列数]  
+> > 获取某一行的第几个元素[行,列]  
+> 
+> 高级索引
+> > 缺省索引  
+> > ```
+> > a = np.arange(0, 100, 10) 
+> > b = a[:5] 
+> > c = a[a >= 50] 
+> > print(b) # >>>[ 0 10 20 30 40] 
+> > print(c) # >>>[50 60 70 80 90]
+> > ```
+> > 布尔索引
+> > > 通过布尔运算（如：比较运算符）来获取符合指定条件的元素的数组  
+> > 
+> > 花式索引
+> > > 花式索引是NumPy用来描述使用整型数组作为索引， 根据索引数组的值作为目标数组的某个轴的下标来取值。 使用一维整型数组作为索引，如果目标是一维数组，那么索引的结果就是对应位置的元素；如果目标是二维数组，那么就是对应下标的行  
+> > 
+> > where函数
+> > > where() 函数是另外一个根据条件返回数组中的值下标的元组（下标数组，数组类型）。
+> > > ```
+> > > a = np.arange(0, 100, 10) 
+> > > b = np.where(a < 50) 
+> > > c = np.where(a >= 50) 
+> > > print(a) 
+> > > print(b)--》(array([0, 1, 2, 3, 4], dtype=int64),) 
+> > > print(c)--》(array([5, 6, 7, 8, 9], dtype=int64),)
+> > > ```
+
+数组和数的计算
+> 会自动与数组中的每一个元素进行计算  
+
+数组与数组的计算
+> + 让几个数组每行每列互加  
+> - 让几个数组每行每列互减  
+> *让几个数组每行每列互乘  
+> / 让几个数组每行每列互除  
+> % 让几个数组每行每列互取余  
+> 做判断  
+
+numpy读取数据
+> CSV:Comma-Separated Value,逗号分隔值文件 换行和逗号分隔行列的格式化文本,每一行的数据表示一条记录
+> 由于csv便于展示,读取和写入,所以很多地方也是用csv的格式存储和传输中小型的数据
+
 
 ## Pada
