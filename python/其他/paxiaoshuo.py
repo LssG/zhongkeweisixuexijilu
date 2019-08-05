@@ -11,7 +11,18 @@ for i in range(200):
 
     html = res.text
 
-    wenben = re.search(r"<div class=\"n-title\">(.*?)</div>", html, re.S).groups(1)[0]
+    sea = re.search(r"<div class=\"n-title\">(.*?)</div>", html, re.S)
+
+    # print(sea)
+
+    if sea == None:
+        res = requests.get(URL + URLend)
+
+        html = res.text
+
+        sea = re.search(r"<div class=\"n-title\">(.*?)</div>", html, re.S)
+
+    wenben = sea.groups(1)[0]
 
     zhengze = r"<div class=\"n-chapter\" id=\"content\">(.*?)</div>"
 
@@ -19,6 +30,7 @@ for i in range(200):
     wenben = wenben.replace("\r\n\r\n", "\r\n")
     wenben = wenben.replace("<br/>", "\n")
     wenben = wenben.replace("\t", "\n")
+    wenben = wenben.replace("\u57a9", "")
 
     # print(wenben)
     file.write(wenben)
