@@ -583,4 +583,182 @@ CSV
 > delimiter : 分割字符串，默认是任何空格  
 
 
-## Pada
+## Pandas
+通过下标获取series中的数据时，索引中不能有数字  
+###Series与DataFrame类型 
+####Series 一维，带标签数组
+series的创建
+> 创建的函数  
+> ```
+> pandas.Series( data, index, dtype, copy) 
+> ```
+> > data数据采取各种形式，如：ndarray，list，constants  
+> > index索引值必须是唯一的和散列的，与数据的长度相同。 默认np.arange(n)如果没有索引被传递。  
+> > dtype用于数据类型。如果没有，将推断数据类型  
+> > copy复制数据，默认为false  
+> 
+> 创建空的series  
+> ```
+>  pd.Series([])  
+> ```
+> 列表  
+> ```
+>  pd.Series([1, 2, 3, 4])  
+> ```
+> numpy数组  
+> ```
+>  pd.Series(np.arange(7))  
+> ```
+> 字典  
+> ```
+> pd.Series({'name':"小明", 'age':20, 'score':30})  
+> ```
+> 指定索引  
+> ```
+> pd.Series([1, 2, 3, 4], index=['A', 'B', 'C', 'D'])    
+> ```
+
+获取元素
+> s["name"]  
+> 切片  
+> 下标  
+
+属性
+> index 获取所有的索引  
+> name 给series命名  
+> values 获取所有的值  
+> axes 返回行轴标签列表。  
+> dtype 返回对象的数据类型(dtype)。  
+> empty 如果系列为空，则返回True。  
+> ndim 返回底层数据的维数，默认定义：1。  
+> size 返回基础数据中的元素数。  
+> head() 返回前n行  
+> tail() 返回最后n行。  
+
+#### DataFrame 二维，Series容器  
+
+属性
+> T 转置行和列。  
+> axes 返回一个列，行轴标签和列轴标签作为唯一的成员  
+> dtypes 返回此对象中的数据类型(dtypes)。  
+> empty 如果NDFrame完全为空[无项目]，则返回为True; 如果任何轴的长度为0。  
+> ndim 轴/数组维度大小。  
+> shape 返回表示DataFrame的维度的元组。  
+> size NDFrame中的元素数。  
+> values NDFrame的Numpy表示。  
+> head() 返回开头前n行。  
+> tail() 返回最后n行。  
+
+创建方式
+> 公式  
+> ```
+> pandas.DataFrame( data, index, columns, dtype, copy)  
+> ```
+> >   data 数据采取各种形式，如:ndarray，series，map，lists，dict，constant和另一个DataFrame。  
+> >   index 对于行标签，要用于结果帧的索引是可选缺省值np.arrange(n)，如果没有传递索引值。  
+> >   columns 对于列标签，可选的默认语法是 - np.arange(n)。 这只有在没有索引传递的情况下才是这样。  
+> >   dtype 每列的数据类型  
+> >   copy 如果默认值为False，则此命令(或任何它)用于复制数据。  
+> 
+> 创建方式
+> > 列表  
+> > ```
+> >   pd.DataFrame([1,2,3,5,6])
+> >   dics = [{"name":"小明","age":30 },{"name":"小明","age":30 },{"name":"小明","age":30 }] 
+> >   df = pd.DataFrame(dics)
+> > ```
+> > 字典  
+> >   ```
+> >   dic = {"name":["小明","小张","小李"],"score":[33,44,66]} 
+> >   df = pd.DataFrame(dic)
+> >   ```
+> > Series  
+> >   ```
+> >   dic = {"name":pd.Series(["小明","小李","小张"]),"score":pd.Series([33,66,88]) } 
+> >   df = pd.DataFrame(dic)
+> >   ```
+> > Numpy ndarrays  
+> >   ```
+> >   arr = np.array([[1,2,3,4,5],[1,2,3,4,5]]) 
+> >   df = pd.DataFrame(arr,columns=["a","b","c","d","e"]) 
+> >   print(df)
+> >   ```
+> > 另一个数据帧(DataFrame)  
+> >   ```
+> >   df2 = pd.DataFrame(df) print(df2)  
+> >   ```
+
+基本操作
+> 列操作
+> > 选择列
+> > ```
+> >   print(df["name"])
+> > ```
+> > 添加列  
+> >   ```
+> >   df["score"] = [66,88,90]
+> >   ```
+> > 删除列del
+> >   ```
+> >     del df["score"]
+> >   ```
+> >   pop  
+> >     ```
+> >     df.pop("score")  
+> >     ```  
+> 
+> 行操作
+> > 选择行
+> > ```
+> >   df[:1]
+> > ```
+> > 拼接数据集会生成一个新的DataFrame  
+> > ```
+> >   df = df.append(pd.DataFrame([{"name":"小朱","age":50,"score":100}]))
+> > ```
+> > 删除行 会生成一个新的dataframe  
+> > ```
+> >   df = df.drop(3)
+> > ```
+> > .ix()基于标签和整数
+> > .iloc()基于整数
+> > 基于标签
+> > ```
+> >   df.loc[:"a"]
+> > ```  
+
+描述性统计函数
+> count()非空观测数量  
+> sum()所有值之和  
+> 默认轴0  
+> ```
+>   df["score"].sum()
+> ```
+> 轴1
+> ```
+>   df.sum(1)
+> ```
+> mean()所有值的平均值
+> ```
+> df["score"].mean()
+> ```  
+> median()所有值的中位数  
+> mode()值的模值  
+> std()值的标准偏差  
+> min()所有值中的最小值  
+> max()所有值中的最大值  
+> abs()绝对值  
+> prod()数组元素的乘积  
+> cumsum()累计总和  
+> cumprod()累计乘积  
+> 汇总数据
+> ```
+> df.describe()
+> ```  
+
+> 函数应用
+> 行或列函数应用：apply()
+> >可以使用apply()方法沿DataFrame的轴应用任意函数
+> ```
+>   df = df.apply(np.mean,axis=1)
+> ```
