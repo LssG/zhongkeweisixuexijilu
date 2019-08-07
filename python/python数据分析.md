@@ -743,7 +743,7 @@ series的创建
 > df["score"].mean()
 > ```  
 > median()所有值的中位数  
-> mode()值的模值  
+> mode()数据中每行或每列的众数  
 > std()值的标准偏差  
 > min()所有值中的最小值  
 > max()所有值中的最大值  
@@ -756,9 +756,46 @@ series的创建
 > df.describe()
 > ```  
 
-> 函数应用
+函数应用
+> 表合理函数应用：pipe()  
+> > 自定义函数对DataFrame进行操作
+> > ```
+> >   def add(a,b): 
+> >       return a+b 
+> >   df = df.pipe(add,10)
+> > ```  
+>
 > 行或列函数应用：apply()
-> >可以使用apply()方法沿DataFrame的轴应用任意函数
+> > 可以使用apply()方法沿DataFrame的轴应用任意函数
+> > ```
+> >   df = df.apply(np.mean,axis=1)
+> > ```  
+> 
+> 元素函数应用：applymap()
 > ```
->   df = df.apply(np.mean,axis=1)
+> df = df.applymap(lambda num:num*10)
 > ```
+> series中的map
+> ```
+>   df["c1"] = df["c1"].map(lambda num:num*10)
+> ```  
+
+重建索引
+> reindex_like  
+> > pad/ffill - 向前填充值  
+> > bfill/backfill - 向后填充值  
+> > nearest  - 从最近的索引值填充    
+> 
+> reindex  
+> 如果之前没有列名对应的数据 就会显示nan 
+> ```
+> df = df.reindex(columns=["name","新的"])  
+> ```
+> reset_index  
+> ```
+> result = result.reset_index()  
+> ```
+> > 删除掉上一次的index  
+> > ```
+> > result = result.reset_index(drop=True)   
+> > ```
