@@ -799,3 +799,216 @@ series的创建
 > > ```
 > > result = result.reset_index(drop=True)   
 > > ```
+
+重命名列rename
+```
+df = df.rename(columns={"原列名":"新列名"})
+df.columns = ["姓名","年龄","分数"]
+```
+
+排序
+> 按标签排序sort_index
+> ```
+>   df1 = pd.DataFrame([[20,5,3,9],[10,55,4,2]],index=[4,2]) 
+>   df1 = df1.sort_index(ascending=False)
+> ```
+> 按实际值sort_values
+> ```
+>   df1 = df1.sort_values(by=列的名字,ascending=False)
+> ```
+
+分组聚合合并
+> 分组
+> ```
+> group = df1.groupby(["name","time"])
+> ```
+> 查看分组
+> ```
+>   print(df.groupby("name").groups)
+> ```
+> 多列分组
+> ```
+>   print(df.groupby(["name","age"]).groups)
+> ```
+> 选择一个分组
+> ```
+>   group.get_group(("小明",31))
+> ```
+> 分组计算、统计
+> >   sum()    
+> >   count（）  
+> >   max()  
+> >   min()   
+> >   size()  
+> >   describe()    
+> 
+> 聚合agg
+> ```
+>   df1.agg({"age":["sum","min","mean","count"],"time":["sum","min","mean","count"]})
+> ```
+> 内置聚合方法
+> >   np.sum  
+> >   np.mean  
+> >   np.max  
+> >   np.min  
+> >   np.size  
+> 
+> 自定义聚合方法  
+> ```
+>   df = pd.DataFrame([[2,3,5],[3,5,6],[66,7,8] ]) 
+>   def sum(df):
+>       return df.min()+df.max() 
+>   print(df) 
+>   print(df.agg(sum))
+> ```
+> 合并merge   
+> 合并所有相同项  
+> ```
+> pd.merge(df1,df2)
+> ```
+> on="age" 按照哪个字段名去查找合并  
+> how
+> >   left 参考左面的值 忽略右面的  左面没有为NAN  
+> >   right 参考右面  
+> >   inner一方没有补全有的值  
+> >   outer 把所有的数据合并 没有的补nan  不相同的也添加  
+
+数据离散化与装箱 
+> 连续数据的离散化 实现区间次数的统计
+> cut
+> ```
+> bin = [10,15,20,30]#面元 
+> cat = pd.cut(dataF1["age"],bins)#面元划分
+> ```
+> 对离散化的数据进行统计
+> ```
+> pd.value_counts(cat)
+> ```
+> qcut
+> ```
+> cat = pd.qcut(dataF1["age"],q=2)
+> ```
+
+离散数据的哑变量矩阵 
+> 哑变量 也叫虚拟变量， 引入哑变量的目的是，将不能够定量处理的变量量化， 如职业、性别对收入的影响，战争、自然灾害对GDP的影响， 季节对某些产品（如冷饮）销售的影响等等
+> ```
+> print(pd.get_dummies(cat))
+> ```
+
+数据清洗
+> 填充k空值 会生成一个新的DataFrame
+> ```
+> df.fillna(value=0)
+> ```
+> 使用某个属性的均值 填充
+> ```
+> df["age"].fillna(df["age"].mean())
+> ```
+> 删除重复的数据
+> ```
+> df[‘name’].drop_duplicates()
+> ```
+> 删除重复的数据 重置索引
+> ```
+> df[‘name’].drop_duplicates(keep=’last’)
+> ```
+> 字符串处理
+> ```
+> series对象.str.upper()
+> ```
+
+DataFrame与ndarray互操作 
+```
+df.values
+```
+
+Pandas可加载的文件及函数
+> read_csv  
+> >从文件、URL、文件型对象中加载带分割符的数据。默认分隔符为逗号(',') 
+> 
+> read_table  
+> >从文件、URL、文件型对象中加载带分割符的数据。默认分隔符为逗号('\t')  
+> 
+> read_fwf  
+> >读取定宽列格式数据（无分隔符）  
+> 
+> read_clipboard  
+> >读取剪贴板中的数据，可以看做是read_table的剪贴板版。在将网页转换为表格时很有用  
+> 
+> read_excel  
+> >从ExcelXLS或XLSXfile读取表格数据  
+> 
+> read_hdf   
+> >读取Pandas写的HDF5文件  
+> 
+> read_html  
+> >读取HTML文档中的所有表格  
+> 
+> read_json  
+> >读取JSON（JavaScript Object Notation）字符串中的数据  
+> 
+> read_msgpack  
+> >二进制格式编码的Pandas数据  
+> 
+> read_pickle  
+> >读取Python Pickle格式中存储的任意对象  
+> 
+> read_sas  
+> >读取存储于SAS系统自定义存储格式的SAS数据集  
+> 
+> read_sql  
+> >(使用SQLAlchemy)读取SQL查询结果为Pandas的DataFrame  
+> 
+> read_stata  
+> >读取Stata文件格式的数据集  
+> 
+> read_feather  
+> >读取Feather二进制文件格式  
+
+Pandas文件写入介绍 
+```
+dataF1.to_csv("./tt.csv",sep=',', header=True, index=True)
+```
+采样
+```
+df.sample(frac=10)#随机frac采样的数量
+```
+
+#### 数据库的操作
+操作流程
+> 打开、连接
+> >  connect
+> > >     host 主机地址  
+> > >     user 用户名  
+> > >     passwd 密码  
+> > >     port 端口号  
+> > >     db 数据库名  
+> >
+> > ```
+> > MySQLdb.connect(host="47.92.2.94",user="liuyujing",passwd="123456",port=3306,db="chandao",use_unicode=True)
+> > ```
+> 
+> 操作
+> >   设置编码集
+> >   ```
+> >     con.set_character_set("utf8")
+> >   ```
+> >   增删改查的sql操作
+> > >     获取游标
+> > >     ```
+> > >       cursor = con.cursor()
+> > >     ```
+> > >     执行sql
+> > >     ```
+> > >       cursor.execute(sql)
+> > >     ```
+> > >     提取数据||提交sql  
+> 
+> 关闭
+> ```
+>   con.close()
+> ```
+
+工具
+> mysqlClient
+> pyMYSQL
