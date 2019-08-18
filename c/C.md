@@ -169,6 +169,71 @@ do...while
 > > }
 > > ```
 
+## 函数
+公式
+```
+return_type function_name( parameter list ) {    body of the function }
+```
+作用域  
+> 在函数或块内部的局部变量  
+> 在所有函数外部的全局变量  
+> 在形式参数的函数参数定义中    
+main函数的功能
+```
+int main(int arg,char **args){
+    printf("%s",args[0]) 
+} 
+```
+> 默认有一个编译好,可执行文件的路径  
+可变参数
+> 通过...来表示 可变参数
+> ```
+> //使用可变参数 -> 获取参数 -> 导入stdarg 
+> \#include <stdarg.h>
+> void fun9(int arg,...){ 
+>     //    声明参数列表    
+>     va_list args;    
+>     va_start(args,arg); //   获取参数值 
+>     for (int i = 0; i < arg; ++i) {
+>         printf("%d\n",va_arg(args, int)); 
+>     }
+>     printf("%d\n",va_arg(args, int));     
+>     printf("%d\n",va_arg(args, int));    
+>     printf("%d\n",va_arg(args, int));    
+>     va_end(args); 
+> }
+> ```
+
+## 数组
+
+## 字符串
+连接
+```
+strcat(s1, s2);
+```
+复制字符串 s2 到字符串 s1
+```
+strcpy(s1, s2);
+```
+返回字符串 s1 的长度。
+```
+strlen(s1);
+```
+字符串比较
+```
+strcmp(s1, s2);
+```
+> 如果 s1 和 s2 是相同的，则返回 0  
+> 如果 s1 < s2 则返回小于 0  
+> 如果 s1 > s2 则返回大于 0  
+
+字符串截取
+```
+strchr(s1, ch);
+printf("%s",strchr(msg,'h'));
+```
+
+
 ## 枚举
 enum　枚举名　{枚举元素1,枚举元素2,……};
 ```
@@ -188,3 +253,57 @@ enum SEASON {
 };  
 enum SEASON season;
 ```
+
+## 指针 pointer
+符号
+> & 取地址符  
+> %p 打印地址  
+> * 取值/声明指针变量  
+
+运算
+> ++  
+> \-\-  
+> +=  
+> \-=  
+
+指针的长度
+```
+sizeof(int *)
+```
+创建指针对象
+```
+int num = 30; int *a = &num;
+int *a = malloc(4);
+```
+free 释放指针对象  
+
+函数指针
+函数 也是一个(对象)      
+声明:returnType funName(parms);      
+
+## 预编译
+头文件的重复引入
+```
+#ifdef
+#pragma once
+```
+宏定义  
+> 宏函数
+> ```
+> #define MAX(a,b) a>=b?a:b  
+> #define ENUMTER(len,content) \     
+>     for (int i=0;i<len;++i)content
+> ```
+> 宏定义 
+> ```
+> //#define 宏名字 宏代表的值 
+> #define FFF 0 
+> #define VVV() 2+3 
+> #define KKK(a) a%2 
+> #define PPP(a,b) printf("%d\n%d",a,b)
+> printf("%d\n",VVV()); 
+> printf("%d\n",KKK(3));  
+> PPP(22,33);
+> #define ANDROID "1"
+> #define ANDROID 1
+> ```
